@@ -105,7 +105,14 @@
               <tr>
                   <td style="padding: 10px;">&nbsp;</td>
                   <td style="padding: 10px;" class="text-center">
-                      <asp:Button ID="btnWrite" runat="server"  Text="Send Message" Width="361px" />
+                      <asp:Button ID="btnWrite" runat="server"  Text="Send Message" Width="361px" OnClick="btnWrite_Click" />
+                  </td>
+                  <td style="padding: 10px;">&nbsp;</td>
+              </tr>
+              <tr>
+                  <td style="padding: 10px;">&nbsp;</td>
+                  <td style="padding: 10px;" class="text-center">
+                      <asp:Literal ID="litMessage" runat="server"></asp:Literal>
                   </td>
                   <td style="padding: 10px;">&nbsp;</td>
               </tr>

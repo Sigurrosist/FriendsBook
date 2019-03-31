@@ -29,4 +29,25 @@ public partial class WriteMessage : System.Web.UI.Page
             cboRecipient.Items.Add(temp);
         }
     }
+
+    protected void btnWrite_Click(object sender, EventArgs e)
+    {
+        string title = txtSubject.Text;
+        string message = txtMessage.Text;
+        string receiver = cboRecipient.SelectedValue.ToString();
+        string senduser = Session["User"].ToString();
+        string currentTime = DateTime.Now.ToString("h:mm:ss tt");
+        string sql = "insert into Messages (SenderID, ReceiverID, Message, MessageTime, Title) values (@senduser, @receiver, @message, @currentTime, @title)";
+        OleDbCommand insertCommand = new OleDbCommand(sql, myCon);
+        insertCommand.Parameters.AddWithValue("senduser", senduser);
+        insertCommand.Parameters.AddWithValue("receiver", receiver);
+        insertCommand.Parameters.AddWithValue("message", message);
+        insertCommand.Parameters.AddWithValue("currentTime", currentTime);
+        insertCommand.Parameters.AddWithValue("title", title);
+
+        int messageDone = insertCommand.ExecuteNonQuery();
+        string result = "";
+        result += (messageDone == 1) ? "Message to " + cboRecipient.SelectedItem.Text + " is successfully sent!" : "Message is not sent!";
+        litMessage.Text = result;
+    }
 }
