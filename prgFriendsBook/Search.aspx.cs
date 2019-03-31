@@ -94,17 +94,7 @@ public partial class Search : System.Web.UI.Page
         if (chkCity.Checked || chkGender.Checked || chkLanguage.Checked || chkRace.Checked)
         {
             sql += " where ";
-            if (chkCity.Checked)
-            {
-                if (cboCity.SelectedValue.ToString() != "0")
-                {
-                    sql += "CityID = " + cboCity.SelectedValue.ToString() + " and ";
-                }
-                else
-                {
-                    // for case that the user selected all cities
-                }
-            }
+            sql += (chkCity.Checked) ? "CityID = " + cboCity.SelectedValue.ToString() + " and " : "";
             sql += (chkGender.Checked) ? "GenderID = " + cboGender.SelectedValue.ToString() + " and " : "";
             sql += (chkLanguage.Checked) ? "LanguageID = " + cboLanguage.SelectedValue.ToString() + " and " : "";
             sql += (chkRace.Checked) ? "RaceID = " + cboRace.SelectedValue.ToString() + " and " : "";
@@ -133,17 +123,9 @@ public partial class Search : System.Web.UI.Page
         }
     }
 
-    protected void chkCountry_CheckedChanged(object sender, EventArgs e)
-    {
-        if (chkCountry.Checked)
-        {
-            chkCity.Visible = cboCity.Visible = true;
-            fillCities();
-        }
-    }
 
     protected void cboCountry_SelectedIndexChanged(object sender, EventArgs e)
-    {
+    {       
         fillCities();
     }
 }
