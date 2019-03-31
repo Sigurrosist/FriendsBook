@@ -22,6 +22,13 @@
         .auto-style1 {
             width: 567px;
         }
+        .auto-style2 {
+            width: 567px;
+            height: 77px;
+        }
+        .auto-style3 {
+            height: 77px;
+        }
     </style>
 
 </head>
@@ -96,7 +103,9 @@
                           </td>
                           <td style="padding:25px;">
                               <asp:TextBox ID="txtUserID" runat="server" type="text" placeholder="Enter your ID for login"></asp:TextBox>
-                              <asp:Button ID="btnIDValidate" runat="server" Text="Validate your ID" />
+                              <asp:Button ID="btnIDValidate" runat="server" Text="Validate your ID" OnClick="btnIDValidate_Click" />
+                              <br />
+                              <asp:Label ID="lblValidateID" runat="server" ForeColor="Red"></asp:Label>
                           </td>
                       </tr>
                       <tr>
@@ -116,10 +125,10 @@
                           </td>
                       </tr>
                       <tr>
-                          <td style="padding:25px;" class="auto-style1">
+                          <td style="padding:25px;" class="auto-style2">
                               <asp:Label ID="Label7" runat="server" Text="Most Spoken Languages"></asp:Label>
                           </td>
-                          <td style="padding:25px;">
+                          <td style="padding:25px;" class="auto-style3">
                               <asp:DropDownList ID="cboLanguage" runat="server"></asp:DropDownList>
                           </td>
                       </tr>
@@ -136,7 +145,7 @@
                               <asp:Label ID="Label9" runat="server" Text="Country"></asp:Label>
                           </td>
                           <td style="padding:25px;">
-                              <asp:DropDownList ID="cboCountry" runat="server" OnSelectedIndexChanged="cboCountry_SelectedIndexChanged"></asp:DropDownList>
+                              <asp:DropDownList ID="cboCountry" runat="server" AutoPostBack="True" OnSelectedIndexChanged="cboCountry_SelectedIndexChanged"></asp:DropDownList>
                           </td>
                       </tr>
                       <tr>
@@ -149,11 +158,13 @@
                       </tr>
                       <tr>
                           <td style="padding:25px;" class="auto-style1">
-                              <asp:Label ID="Label11" runat="server" Text="Can't find your city?"></asp:Label>
+                              <asp:Label ID="lblEnrolCity" runat="server" Text="Add new city"></asp:Label>
                           </td>
                           <td style="padding:25px;">
                               <asp:Textbox ID="txtNewCity" runat="server" placeholder="Enter your city name"></asp:Textbox>
-                              <asp:Button ID="btnNewCity" runat="server" Text="Add" />
+                              <asp:Button ID="btnNewCity" runat="server" Text="Add" OnClick="btnNewCity_Click" />
+                              <br />
+                              <asp:Label ID="lblAddCity" runat="server" ForeColor="Red"></asp:Label>
                           </td>
                       </tr>
                       <tr>
@@ -162,7 +173,7 @@
                           </td>
                           <td style="padding:25px;">
                               <p><asp:Label runat="server" Text="Year  : "></asp:Label><asp:DropDownList runat="server" ID="cboYear"></asp:DropDownList></p>
-                              <p><asp:Label runat="server" Text="Month : "></asp:Label><asp:DropDownList runat="server" ID="cboMonth"></asp:DropDownList></p>
+                              <p><asp:Label runat="server" Text="Month : "></asp:Label><asp:DropDownList runat="server" ID="cboMonth" OnSelectedIndexChanged="cboMonth_SelectedIndexChanged"></asp:DropDownList></p>
                               <p><asp:Label runat="server" Text="Day   : "></asp:Label><asp:DropDownList runat="server" ID="cboDay"></asp:DropDownList></p>
                           </td>
                       </tr>
@@ -171,7 +182,9 @@
                                <asp:Label runat="server" Text="Check all information and click Register button!"></asp:Label>
                           </td>
                           <td style="padding:25px;">
-                              <asp:Button ID="btnSubmit" runat="server" Text="Register" Width="200px"></asp:Button>
+                              <asp:Button ID="btnSubmit" runat="server" Text="Register" Width="200px" OnClick="btnSubmit_Click"></asp:Button>
+                              <br />
+                              <asp:Label ID="lblRegMessage" runat="server" ForeColor="Red"></asp:Label>
                           </td>
                       </tr>
                   </table>
