@@ -69,8 +69,8 @@
                 My Account
               </a>
               <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="#">My settings</a>
-                <a class="dropdown-item" href="#">My Messages</a>
+                <a class="dropdown-item" href="Settings.aspx">My settings</a>
+                <a class="dropdown-item" href="MessageCenter.aspx">My Messages</a>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="Logout.aspx">Log out</a>
               </div>

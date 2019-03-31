@@ -64,7 +64,7 @@
                       <div class="rows">
               <div class="col-md-4"></div>
               <div class="col-md-4">
-                  <form id="formRegister" method="post" action= "Login.aspx" runat="server">
+                  <form runat="server">
                   <table style="width:100%; padding:50px;">
                       <tr>
                           <td style="padding:25px;" class="auto-style1">
@@ -117,11 +117,10 @@
                       </tr>
                       <tr>
                           <td style="padding:25px;" class="auto-style1">
-                              <asp:Label ID="Label7" runat="server" Text="Spoken Languages"></asp:Label>
+                              <asp:Label ID="Label7" runat="server" Text="Most Spoken Languages"></asp:Label>
                           </td>
                           <td style="padding:25px;">
                               <asp:DropDownList ID="cboLanguage" runat="server"></asp:DropDownList>
-                              <asp:Button ID="btnAddLang" runat="server" Text="Add this language" />
                           </td>
                       </tr>
                       <tr>
@@ -137,7 +136,7 @@
                               <asp:Label ID="Label9" runat="server" Text="Country"></asp:Label>
                           </td>
                           <td style="padding:25px;">
-                              <asp:DropDownList ID="cboCountry" runat="server"></asp:DropDownList>
+                              <asp:DropDownList ID="cboCountry" runat="server" OnSelectedIndexChanged="cboCountry_SelectedIndexChanged"></asp:DropDownList>
                           </td>
                       </tr>
                       <tr>

@@ -36,7 +36,7 @@ public partial class WriteMessage : System.Web.UI.Page
         string message = txtMessage.Text;
         string receiver = cboRecipient.SelectedValue.ToString();
         string senduser = Session["User"].ToString();
-        string currentTime = DateTime.Now.ToString("h:mm:ss tt");
+        string currentTime = DateTime.Now.ToString();
         string sql = "insert into Messages (SenderID, ReceiverID, Message, MessageTime, Title) values (@senduser, @receiver, @message, @currentTime, @title)";
         OleDbCommand insertCommand = new OleDbCommand(sql, myCon);
         insertCommand.Parameters.AddWithValue("senduser", senduser);
