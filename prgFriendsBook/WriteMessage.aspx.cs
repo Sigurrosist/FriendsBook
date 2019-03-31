@@ -16,6 +16,8 @@ public partial class WriteMessage : System.Web.UI.Page
         myCon.Open();
         OleDbCommand myCmd = new OleDbCommand("select UserID, FirstName, LastName, UserName from Users", myCon);
         myRdr = myCmd.ExecuteReader();
+        if (!Page.IsPostBack)
+            fillCboBox();
     }
     private void fillCboBox()
     {
@@ -24,6 +26,7 @@ public partial class WriteMessage : System.Web.UI.Page
             ListItem temp = new ListItem();
             temp.Text = myRdr["FirstName"].ToString() + ", " + myRdr["LastName"].ToString() + " - " + myRdr["UserName"].ToString();
             temp.Value = myRdr["UserID"].ToString();
+            cboRecipient.Items.Add(temp);
         }
     }
 }
