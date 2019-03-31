@@ -199,6 +199,7 @@ public partial class Register : System.Web.UI.Page
             string username = txtUserID.Text.Trim();
             string password = txtPassword.Text.Trim();
 
+            string sql = "insert into Users (Email, FirstName, LastName, GenderID, RaceID, CityID, LanguageID, BirthDate, UserName, Password) values (@email, @fname, @lname, @gender, @race, @city, @language, @birthdate, @username, @password)";
 
         }
         else
