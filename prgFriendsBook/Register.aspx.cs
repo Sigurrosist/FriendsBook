@@ -49,7 +49,7 @@ public partial class Register : System.Web.UI.Page
         OleDbCommand fillUsers = new OleDbCommand("select * from Users", myCon);
         UsersRdr = fillUsers.ExecuteReader();
 
-        idValidated = false;
+        idValidated = true;
         countryID = 0;
         newCityEnrollment(false);
     }
@@ -130,17 +130,15 @@ public partial class Register : System.Web.UI.Page
 
     protected void btnIDValidate_Click(object sender, EventArgs e)
     {
-        bool validated = true;
         while (UsersRdr.Read())
         {
             if (UsersRdr["UserName"].ToString() == txtUserID.Text.Trim())
             {
-                validated = false;
+                idValidated = false;
                 break;
             }
         }
-        lblValidateID.Text = (validated) ? "You can use this ID " : "ID already exists";
-        idValidated = validated;
+        lblValidateID.Text = (idValidated) ? "You can use this ID " : "ID already exists";
     }
 
     protected void btnNewCity_Click(object sender, EventArgs e)
@@ -199,8 +197,33 @@ public partial class Register : System.Web.UI.Page
             string username = txtUserID.Text.Trim();
             string password = txtPassword.Text.Trim();
 
-            string sql = "insert into Users (Email, FirstName, LastName, GenderID, RaceID, CityID, LanguageID, BirthDate, UserName, Password) values (@email, @fname, @lname, @gender, @race, @city, @language, @birthdate, @username, @password)";
+            string sql = "insert into Users " +
+                "(Email, FirstName, LastName, GenderID, RaceID, CityID, LanguageID, BirthDate, UserName, [Password])" +
+                " values (@email, @fname, @lname, @gender, @race, @city, @language, @birthdate, @username, @password)";
+            OleDbCommand insertCommand = new OleDbCommand(sql, myCon);
+            insertCommand.Parameters.AddWithValue("email", email);
+            insertCommand.Parameters.AddWithValue("fname", fname);
+            insertCommand.Parameters.AddWithValue("lname", lname);
+            insertCommand.Parameters.AddWithValue("gender", gender);
+            insertCommand.Parameters.AddWithValue("race", race);
+            insertCommand.Parameters.AddWithValue("language", language);
+            insertCommand.Parameters.AddWithValue("birthdate", birthdate);
+            insertCommand.Parameters.AddWithValue("username", username);
+            insertCommand.Parameters.AddWithValue("password", password);
+            sql += "";
+            int executeInsertCommand = insertCommand.ExecuteNonQuery();
+            lblRegMessage.Text = (executeInsertCommand > 0) ? "New user " + txtFirstName.Text + " is successfully registered."
+                : "New user is not successfully registered. Please try again.";
 
+            if(executeInsertCommand > 0)
+            {
+                lblRegMessage.Text = "New user " + txtFirstName.Text + " is successfully registered.";
+                Response.Redirect("Login.aspx");
+            }
+            else
+            {
+                lblRegMessage.Text = "New user is not successfully registered. Please try again.";
+            }
         }
         else
         {

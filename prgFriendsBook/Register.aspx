@@ -173,7 +173,7 @@
                           </td>
                           <td style="padding:25px;">
                               <p><asp:Label runat="server" Text="Year  : "></asp:Label><asp:DropDownList runat="server" ID="cboYear"></asp:DropDownList></p>
-                              <p><asp:Label runat="server" Text="Month : "></asp:Label><asp:DropDownList runat="server" ID="cboMonth" OnSelectedIndexChanged="cboMonth_SelectedIndexChanged"></asp:DropDownList></p>
+                              <p><asp:Label runat="server" Text="Month : "></asp:Label><asp:DropDownList runat="server" ID="cboMonth" AutoPostBack="True" OnSelectedIndexChanged="cboMonth_SelectedIndexChanged"></asp:DropDownList></p>
                               <p><asp:Label runat="server" Text="Day   : "></asp:Label><asp:DropDownList runat="server" ID="cboDay"></asp:DropDownList></p>
                           </td>
                       </tr>
