@@ -153,7 +153,7 @@
                               <asp:Label ID="Label10" runat="server" Text="City"></asp:Label>
                           </td>
                           <td style="padding:25px;">
-                              <asp:DropDownList ID="cboCity" runat="server"></asp:DropDownList>
+                              <asp:DropDownList ID="cboCity" runat="server" AutoPostBack="True"></asp:DropDownList>
                           </td>
                       </tr>
                       <tr>
@@ -177,7 +177,7 @@
                               <p><asp:Label runat="server" Text="Day   : "></asp:Label><asp:DropDownList runat="server" ID="cboDay"></asp:DropDownList></p>
                           </td>
                       </tr>
-                      <tr>
+                      <tr  style="padding-bottom:50px">
                            <td style="padding:25px;" class="auto-style1">
                                <asp:Label runat="server" Text="Check all information and click Register button!"></asp:Label>
                           </td>
@@ -185,6 +185,11 @@
                               <asp:Button ID="btnSubmit" runat="server" Text="Register" Width="200px" OnClick="btnSubmit_Click"></asp:Button>
                               <br />
                               <asp:Label ID="lblRegMessage" runat="server" ForeColor="Red"></asp:Label>
+                              <br />
+                              <br />
+                              <br />
+                              <br />
+                              <br />
                           </td>
                       </tr>
                   </table>

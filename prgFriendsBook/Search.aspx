@@ -106,7 +106,7 @@
                       <asp:CheckBox ID="chkCity" runat="server" Text="Search by City"  />
                   </td>
                   <td style="padding: 10px; width:33%;">
-                      <asp:DropDownList ID="cboCity" runat="server" AutoPostBack="True">
+                      <asp:DropDownList ID="cboCity" runat="server" AutoPostBack="True" OnSelectedIndexChanged="cboCity_SelectedIndexChanged">
                       </asp:DropDownList>
                   </td>
                   <td style="padding: 10px; width:33%;">&nbsp;</td>

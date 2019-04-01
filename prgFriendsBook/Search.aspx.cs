@@ -13,10 +13,10 @@ public partial class Search : System.Web.UI.Page
     static OleDbDataReader CityRdr, CountryRdr, GenderRdr, LanguagesRdr, MessagesRdr, RaceRdr, UserLangRdr, UsersRdr;
     protected void Page_Load(object sender, EventArgs e)
     {
-        fillDataReaders();
 
         if (!Page.IsPostBack)
         {
+            fillDataReaders();
             fillComboBoxes();
             cboCity.Visible = chkCity.Visible = false;
             //numOfMessage();
@@ -86,7 +86,36 @@ public partial class Search : System.Web.UI.Page
         cboLanguage.DataBind();
     }
 
+    private string CitiesQuery()
+    {
+        string allcity = "";
+        if (cboCity.SelectedItem.Text == "All cities")
+        {
+            allcity = "CityID = ";
+            while (CityRdr.Read())
+            {
+                if (CityRdr["CountryID"].ToString() == cboCountry.SelectedValue.ToString())
+                {
+                    allcity += CityRdr["CityID"].ToString() + " or CityID = ";
+                }
+            }
+            //if (allcity == "CityID = ")
+            //{
+            //    allcity = "";
+            //}
+            //if (allcity.Substring(allcity.Length - 13, allcity.Length) == " or CityID = ")
+            //{
+            //    allcity = allcity.Substring(0, allcity.Length - 13);
+            //    allcity += " and ";
+            //}
+        }
+        else
+        {
+            allcity = "CityID = " + cboCity.SelectedValue.ToString() + " and ";
+        }
 
+        return allcity;
+    }
 
     protected void btnSearch_Click(object sender, EventArgs e)
     {
@@ -94,7 +123,7 @@ public partial class Search : System.Web.UI.Page
         if (chkCity.Checked || chkGender.Checked || chkLanguage.Checked || chkRace.Checked)
         {
             sql += " where ";
-            sql += (chkCity.Checked) ? "CityID = " + cboCity.SelectedValue.ToString() + " and " : "";
+            sql += CitiesQuery();
             sql += (chkGender.Checked) ? "GenderID = " + cboGender.SelectedValue.ToString() + " and " : "";
             sql += (chkLanguage.Checked) ? "LanguageID = " + cboLanguage.SelectedValue.ToString() + " and " : "";
             sql += (chkRace.Checked) ? "RaceID = " + cboRace.SelectedValue.ToString() + " and " : "";
@@ -117,7 +146,9 @@ public partial class Search : System.Web.UI.Page
         {
             if(CityRdr["CountryID"].ToString() == cboCountry.SelectedValue.ToString())
             {
-                temp = new ListItem(CityRdr["CityDesc"].ToString(), CityRdr["CityID"].ToString());
+                temp = new ListItem();
+                temp.Text = CityRdr["CityDesc"].ToString();
+                temp.Value = CityRdr["CityID"].ToString();
                 cboCity.Items.Add(temp);
             }
         }
@@ -127,5 +158,10 @@ public partial class Search : System.Web.UI.Page
     protected void cboCountry_SelectedIndexChanged(object sender, EventArgs e)
     {
         fillCities();
+    }
+
+    protected void cboCity_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        lblNumMessage.Text = CitiesQuery();
     }
 }

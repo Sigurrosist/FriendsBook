@@ -8,15 +8,15 @@ using System.Data.OleDb;
 
 public partial class Register : System.Web.UI.Page
 {
-    OleDbConnection myCon;
-    OleDbDataReader UsersRdr;
-    OleDbDataReader GenderRdr;
-    OleDbDataReader LanguagesRdr;
-    OleDbDataReader RaceRdr;
-    OleDbDataReader CountryRdr;
-    OleDbDataReader CityRdr;
-    int countryID;
-    bool idValidated;
+    static OleDbConnection myCon;
+    static OleDbDataReader UsersRdr;
+    static OleDbDataReader GenderRdr;
+    static OleDbDataReader LanguagesRdr;
+    static OleDbDataReader RaceRdr;
+    static OleDbDataReader CountryRdr;
+    static OleDbDataReader CityRdr;
+    static int countryID;
+    static string idValidated;
 
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -48,10 +48,6 @@ public partial class Register : System.Web.UI.Page
 
         OleDbCommand fillUsers = new OleDbCommand("select * from Users", myCon);
         UsersRdr = fillUsers.ExecuteReader();
-
-        idValidated = true;
-        countryID = 0;
-        newCityEnrollment(false);
     }
 
     private void newCityEnrollment(bool isNewCity)
@@ -98,7 +94,8 @@ public partial class Register : System.Web.UI.Page
         {
             cboMonth.Items.Add(i.ToString());
         }
-        cboDay.Items.Add("Please select the month first");
+        fillCboDay();
+        countryID = 0;
     }
 
     protected void cboCountry_SelectedIndexChanged(object sender, EventArgs e)
@@ -110,7 +107,6 @@ public partial class Register : System.Web.UI.Page
     private void fillCboCity()
     {
         cboCity.Items.Clear();
-        newCityEnrollment(false);
         while (CityRdr.Read())
         {
             if (CityRdr["CountryID"].ToString() == cboCountry.SelectedValue.ToString())
@@ -129,16 +125,22 @@ public partial class Register : System.Web.UI.Page
     }
 
     protected void btnIDValidate_Click(object sender, EventArgs e)
+    {        
+        lblValidateID.Text = (isValidateID()) ? "You can use this ID " : "ID already exists";
+    }
+
+    private bool isValidateID()
     {
+        bool validated = true;
         while (UsersRdr.Read())
         {
             if (UsersRdr["UserName"].ToString() == txtUserID.Text.Trim())
             {
-                idValidated = false;
+                validated = false;
                 break;
             }
         }
-        lblValidateID.Text = (idValidated) ? "You can use this ID " : "ID already exists";
+        return validated;
     }
 
     protected void btnNewCity_Click(object sender, EventArgs e)
@@ -164,13 +166,16 @@ public partial class Register : System.Web.UI.Page
                 int executeInsertCity = insertCity.ExecuteNonQuery();
                 if(executeInsertCity>0)
                 {
-                    lblAddCity.Text = "New City Successfully Added : " + txtNewCity.Text;
+                    lblAddCity.Text = "New City Successfully Added : \n" + txtNewCity.Text + "\nPlease select the city from the city list above.";
                     txtNewCity.Text = "";
                 }
                 else
                 {
                     lblAddCity.Text = "Your New city, " + txtNewCity.Text + " is not added successfully. Please try again.";
                 }
+                OleDbCommand fillCity = new OleDbCommand("select * from City", myCon);
+                CityRdr = fillCity.ExecuteReader();
+                fillCboCity();
             }
             else
             {
@@ -182,10 +187,15 @@ public partial class Register : System.Web.UI.Page
             lblAddCity.Text = "Please Enter your city name first";
         }
     }
+    private bool isValidCity()
+    {
+        bool validcity = (cboCity.SelectedItem.Text.Contains("Please add your city below.")) ? false : true;
+        return validcity;
+    }
 
     protected void btnSubmit_Click(object sender, EventArgs e)
     {
-        if (idValidated)
+        if (isValidateID() && isValidCity())
         {
             string email = txtEmail.Text.Trim();
             string fname = txtFirstName.Text.Trim();
@@ -193,6 +203,7 @@ public partial class Register : System.Web.UI.Page
             string gender = cboGender.SelectedValue.ToString();
             string race = cboRace.SelectedValue.ToString();
             string language = cboLanguage.SelectedValue.ToString();
+            string city = cboCity.SelectedValue.ToString();
             string birthdate = cboYear.SelectedItem.Text + "-" + cboMonth.SelectedItem.Text + "-" + cboDay.SelectedItem.Text;
             string username = txtUserID.Text.Trim();
             string password = txtPassword.Text.Trim();
@@ -206,15 +217,14 @@ public partial class Register : System.Web.UI.Page
             insertCommand.Parameters.AddWithValue("lname", lname);
             insertCommand.Parameters.AddWithValue("gender", gender);
             insertCommand.Parameters.AddWithValue("race", race);
+            insertCommand.Parameters.AddWithValue("city", city);
             insertCommand.Parameters.AddWithValue("language", language);
             insertCommand.Parameters.AddWithValue("birthdate", birthdate);
             insertCommand.Parameters.AddWithValue("username", username);
             insertCommand.Parameters.AddWithValue("password", password);
-            sql += "";
-            int executeInsertCommand = insertCommand.ExecuteNonQuery();
-            lblRegMessage.Text = (executeInsertCommand > 0) ? "New user " + txtFirstName.Text + " is successfully registered."
-                : "New user is not successfully registered. Please try again.";
 
+            int executeInsertCommand = insertCommand.ExecuteNonQuery();
+            
             if(executeInsertCommand > 0)
             {
                 lblRegMessage.Text = "New user " + txtFirstName.Text + " is successfully registered.";
@@ -225,6 +235,10 @@ public partial class Register : System.Web.UI.Page
                 lblRegMessage.Text = "New user is not successfully registered. Please try again.";
             }
         }
+        if (!isValidCity())
+        {
+            lblRegMessage.Text = "Please select your city from above and try again.";
+        }
         else
         {
             lblRegMessage.Text = "Please validate your ID and try registering again";
@@ -234,14 +248,18 @@ public partial class Register : System.Web.UI.Page
 
     protected void cboMonth_SelectedIndexChanged(object sender, EventArgs e)
     {
+        fillCboDay();
+    }
+    private void fillCboDay()
+    {
         int numdays = 0;
-        if((isLeapYear(Convert.ToInt32(cboYear.SelectedItem.Text))) && cboMonth.Text == "2")
+        if ((isLeapYear(Convert.ToInt32(cboYear.SelectedItem.Text))) && cboMonth.Text == "2")
         {
             numdays = 29;
         }
         else
         {
-            if((cboMonth.Text == "1") || (cboMonth.Text == "3") || (cboMonth.Text == "5") || (cboMonth.Text == "7") || (cboMonth.Text == "8") || (cboMonth.Text == "10") || (cboMonth.Text == "12"))
+            if ((cboMonth.Text == "1") || (cboMonth.Text == "3") || (cboMonth.Text == "5") || (cboMonth.Text == "7") || (cboMonth.Text == "8") || (cboMonth.Text == "10") || (cboMonth.Text == "12"))
             {
                 numdays = 31;
             }
@@ -249,16 +267,15 @@ public partial class Register : System.Web.UI.Page
             {
                 numdays = 30;
             }
-            if(cboMonth.Text == "2")
+            if (cboMonth.Text == "2")
             {
                 numdays = 28;
             }
         }
-        for(int i = 1; i <= numdays; i++)
+        for (int i = 1; i <= numdays; i++)
         {
             cboDay.Items.Add(i.ToString());
         }
-
     }
     private bool isLeapYear(int year)
     {
