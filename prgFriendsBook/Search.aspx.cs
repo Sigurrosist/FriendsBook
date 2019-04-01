@@ -18,8 +18,7 @@ public partial class Search : System.Web.UI.Page
         {
             fillDataReaders();
             fillComboBoxes();
-            cboCity.Visible = chkCity.Visible = false;
-            //numOfMessage();
+            numOfMessage();
         }
 
     }
@@ -84,37 +83,52 @@ public partial class Search : System.Web.UI.Page
         cboLanguage.DataValueField = "LanguageID";
         cboLanguage.DataSource = LanguagesRdr;
         cboLanguage.DataBind();
+
+        fillCities();
     }
 
     private string CitiesQuery()
     {
-        string allcity = "";
-        if (cboCity.SelectedItem.Text == "All cities")
+        OleDbCommand fillCity = new OleDbCommand("select * from City", myCon);
+        CityRdr = fillCity.ExecuteReader();
+        OleDbCommand fillCountry = new OleDbCommand("select * from Country", myCon);
+        CountryRdr = fillCountry.ExecuteReader();
+        string citysql = "";
+        if (cboCity.SelectedValue == "0")
         {
-            allcity = "CityID = ";
+            citysql += "CityID = ";
+            List<int> cityIDList = new List<int>();
             while (CityRdr.Read())
             {
                 if (CityRdr["CountryID"].ToString() == cboCountry.SelectedValue.ToString())
                 {
-                    allcity += CityRdr["CityID"].ToString() + " or CityID = ";
+                    cityIDList.Add(Convert.ToInt32(CityRdr["CityID"].ToString()));
                 }
             }
-            //if (allcity == "CityID = ")
-            //{
-            //    allcity = "";
-            //}
-            //if (allcity.Substring(allcity.Length - 13, allcity.Length) == " or CityID = ")
-            //{
-            //    allcity = allcity.Substring(0, allcity.Length - 13);
-            //    allcity += " and ";
-            //}
+            if (cityIDList.Count > 0)
+            {
+                for (int i = 0; i < cityIDList.Count; i++)
+                {
+                    if (i == cityIDList.Count - 1)
+                    {
+                        citysql += cityIDList[i].ToString() + " and ";
+                    }
+                    else
+                    {
+                        citysql += cityIDList[i].ToString() + " or CityID = ";
+                    }
+                }
+            }
+            else
+            {
+                citysql += "CityID = 0 and ";
+            }
         }
         else
         {
-            allcity = "CityID = " + cboCity.SelectedValue.ToString() + " and ";
+            citysql = "CityID = " + cboCity.SelectedValue.ToString() + " and ";
         }
-
-        return allcity;
+        return citysql;
     }
 
     protected void btnSearch_Click(object sender, EventArgs e)
@@ -123,11 +137,12 @@ public partial class Search : System.Web.UI.Page
         if (chkCity.Checked || chkGender.Checked || chkLanguage.Checked || chkRace.Checked)
         {
             sql += " where ";
-            sql += CitiesQuery();
+            sql += (chkCity.Checked) ? CitiesQuery() : "";
             sql += (chkGender.Checked) ? "GenderID = " + cboGender.SelectedValue.ToString() + " and " : "";
             sql += (chkLanguage.Checked) ? "LanguageID = " + cboLanguage.SelectedValue.ToString() + " and " : "";
             sql += (chkRace.Checked) ? "RaceID = " + cboRace.SelectedValue.ToString() + " and " : "";
             sql = sql.Substring(0, sql.Length - 5);
+            lblNumMessage.Text = sql;
         }
 
         OleDbCommand searchCmd = new OleDbCommand(sql, myCon);
@@ -138,9 +153,7 @@ public partial class Search : System.Web.UI.Page
 
     private void fillCities()
     {
-        cboCity.Visible = chkCity.Visible = true;
-        cboCity.Items.Clear();
-        ListItem temp = new ListItem("All cities", "0");
+        ListItem temp = new ListItem("All Cities", "0");
         cboCity.Items.Add(temp);
         while (CityRdr.Read())
         {
@@ -157,6 +170,9 @@ public partial class Search : System.Web.UI.Page
 
     protected void cboCountry_SelectedIndexChanged(object sender, EventArgs e)
     {
+        cboCity.Items.Clear();
+        OleDbCommand fillCity = new OleDbCommand("select * from City", myCon);
+        CityRdr = fillCity.ExecuteReader();
         fillCities();
     }
 
